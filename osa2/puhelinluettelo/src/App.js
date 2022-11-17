@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import contactService from './services/contacts'
 import Filter from './components/Filter'
 import Add from './components/Add'
@@ -77,14 +76,17 @@ const App = () => {
 
     setSuccessMessage(`Added ${newName}`)
 
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+
+    setPersons(persons.concat(person))
     
   }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
+
   }
 
   const handleNumberChange = (event) => {
@@ -100,13 +102,15 @@ const App = () => {
     if (window.confirm((`Delete ${name}?`))) {
       contactService
       .remove(id)
-      .then(initialContacts => setPersons(initialContacts))
 
       setErrorMessage(`Deleted ${name}`)
 
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+
+      setPersons(persons.filter(person => person.id !==id))
+
     }
 
     
