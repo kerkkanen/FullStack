@@ -23,66 +23,68 @@ const App = () => {
 
   const addNew = (event) => {
     event.preventDefault()
+
+    if (newName.length === 0 || newNumber.length === 0) {
+      alert("Name or number is missing")
+      return
+    }
     const person = {
       name: newName,
       number: newNumber
     }
+
+    const existing = persons.find(person => person.name === newName)
     
-    if (persons.some((person) => person.name === newName)) {
-      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-        const updatablePerson = persons.find(p => p.name == newName)
-        const changedPerson = {...updatablePerson, number: newNumber}
-
+    if (existing) {
+      if (window.confirm(`${existing.name} is already added to phonebook, replace the old number with a new one?`)) {
+        const updatablePerson = {...person, number: newNumber}
+        
         contactService
-        .update(changedPerson.id, changedPerson)
-        .then(returnedPerson => {
-          setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
-          setSuccessMessage(`Updated ${newName}`)
+          .update(existing.id, updatablePerson)
+          .then(returnedPerson => {
+            setNewName('')
+            setNewNumber('')
+            setSuccessMessage(`Updated ${newName}`)
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
+            setPersons(persons.map(person => person.id !== existing.id ? person : returnedPerson))
+          })
+          .catch(error => {
+            setErrorMessage(
+              `Information of ${newName} has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+              }, 5000)
+            setPersons(persons.filter(p => p.id !== person.id))          
+        })        
+      }
+      
+    } else {
 
-          setTimeout(() => {
+      contactService
+        .create(person)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        setSuccessMessage(`Added ${newName}`)
+        setTimeout(() => {
           setSuccessMessage(null)
-          }, 5000)
+        }, 5000)
+        setPersons(persons.concat(person))
         })
         .catch(error => {
-          setErrorMessage(
-            `Information of ${newName} has already been removed from server`
-          )
-          setTimeout(() => {
-            setErrorMessage(null)
-            }, 5000)
+            setErrorMessage(error.response.data.error)
+            setTimeout(() => {
+              setErrorMessage(null)
+              }, 5000)
+        })
 
-          setPersons(persons.filter(p => p.id !== updatablePerson.id))
-          setNewName('')
-          setNewNumber('')
-
-          return
-          
-        })        
-        
-      }
-      setNewName('')
-      setNewNumber('')
-
-      return
-      
-    }
-    contactService
-    .create(person)
-    .then(returnedPerson => {
-      setPersons(persons.concat(returnedPerson))
-    setNewName('')
-    setNewNumber('')
-    })
-
-    setSuccessMessage(`Added ${newName}`)
-
-    setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
-
-    setPersons(persons.concat(person))
     
   }
+    setNewName('')
+    setNewNumber('')
+}
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
