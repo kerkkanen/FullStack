@@ -2,8 +2,7 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Oravanpyörätelin",
+    "title": "Oravanpyöräteline",
     "author": "K&J",
-    "ulr": "https://oravanpyorateline.blogspot.com/",
-    "likes": 3
+    "url": "https://oravanpyorateline.blogspot.com/"
 }
