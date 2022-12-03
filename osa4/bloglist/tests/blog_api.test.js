@@ -4,12 +4,34 @@ const app = require('../app')
 const helper = require('./test_helper')
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
+let authorization
+
 beforeEach(async () => {
+  await User.deleteMany({})
+
+  const newUser = {
+    username: 'root',
+    password: 'password',
+  }
+
+  await api
+    .post('/api/users')
+    .send(newUser)
+
+  const result = await api
+    .post('/api/login')
+    .send(newUser)
+
+  authorization = {
+    Authorization: `bearer ${result.body.token}`,
+  }
+   
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await Blog.insertMany(helper.initialBlogs)  
 })
 
 describe('when some blogs are saved', () => {
@@ -37,19 +59,34 @@ describe('when some blogs are saved', () => {
 
 describe('when blogs are added', () => {
 
+  test('401 is returned, when token is missing', async () => {
+    const newBlog = {
+      title: "Peact ratterns",
+      author: "Chichael Man",
+      url: "https://reactpatterns.com/",
+      likes: 14
+    }
+    
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+  })
+
   test('blogs number increases by one when a blog is added', async () => {
     const newBlog = {
-                      title: "Peact ratterns",
-                      author: "Chichael Man",
-                      url: "https://reactpatterns.com/",
-                      likes: 14
-                    }
+      title: "Peact ratterns",
+      author: "Chichael Man",
+      url: "https://reactpatterns.com/",
+      likes: 14
+    }
     const start = await helper.blogsInDb()
     const before = start.length
     
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set(authorization)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -63,13 +100,14 @@ describe('when blogs are added', () => {
 
   test('if likes not set, zero likes when blog added', async () => {
     const newBlog = {
-                      title: "Is Harmful",
-                      author: "Degsger X. Ejskstra",
-                      url: "https://reactpatterns.com/"
-                    }  
+      title: "Is Harmful",
+      author: "Degsger X. Ejskstra",
+      url: "https://reactpatterns.com/"
+    }  
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set(authorization)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -81,38 +119,56 @@ describe('when blogs are added', () => {
 
   test('if title or url not set, response is 400 Bad Request', async () => {
     const first = {
-                      title: "Is Harmful",
-                      author: "Degsger X. Ejskstra"
-                    }
+      title: "Is Harmful",
+      author: "Degsger X. Ejskstra"
+    }
 
-  const second = {                   
-                      author: "Degsger X. Ejskstra",
-                      url: "https://reactpatterns.com/"
-                    }  
+    const second = {                   
+      author: "Degsger X. Ejskstra",
+      url: "https://reactpatterns.com/"
+    }  
     await api
       .post('/api/blogs')
       .send(first)
+      .set(authorization)
       .expect(400)
 
-  await api
-    .post('/api/blogs')
-    .expect(400)
-  })
+    await api
+      .post('/api/blogs')
+      .send(second)
+      .set(authorization)
+      .expect(400)
+    })
 })
 
 describe('when blog is deleted', () => {
 
   test('when deleted, 204 is returned', async () => {
     const start = await helper.blogsInDb()
-    const deleted = start[0]
+
+    const newBlog = {
+      title: "Is Harmful",
+      author: "Degsger X. Ejskstra",
+      url: "https://reactpatterns.com/"
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set(authorization)
+      .expect(201)
+    
+    const blogs = await helper.blogsInDb()
+    const deleted = blogs[blogs.length-1]
 
     await api
       .delete(`/api/blogs/${deleted.id}`)
+      .set(authorization)
       .expect(204)
     
     const end = await helper.blogsInDb()
 
-    expect(start.length - end.length).toBe(1)
+    expect(start.length - end.length).toBe(0)
   })
 })
 
