@@ -17,3 +17,37 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+
+h2 {
+  color: teal;
+  font-style: 'strong';
+  font-size: 16    
+}
+
+.page {
+  max-width: 500px;
+  margin: auto;
+}
+
+.createBlog {
+  padding-bottom: 15px;
+  margin: auto;
+}
+
+input {
+  width: 200px;
+  margin: auto;
+  font-size: 15px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+button {
+  border-radius: 1px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.deleteButton {
+  background-color: red
+}
