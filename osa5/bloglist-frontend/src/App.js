@@ -8,13 +8,12 @@ import Togglable from './components/Togglable'
 import Blog from './components/Blog'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [ blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -71,7 +70,7 @@ const App = () => {
     try {
       const blog = await blogService.create(blogObject)
       setBlogs(blogs.concat({ ...blog, user }))
-      setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`)
+      setSuccessMessage(`a new blog ${blog.title} is added`)
       setTimeout(() => {
         setSuccessMessage(null)
       }, 4000)
@@ -154,7 +153,7 @@ const App = () => {
 
         <div>
           <p>
-            <strong>{user.username} logged in</strong> <button onClick={() => handleLogout(user)}>Logout</button>
+            <strong>{user.username} logged in</strong> <button id='logout' onClick={() => handleLogout(user)}>Logout</button>
           </p>
           <div className='createBlog'>
             <Togglable buttonLabel='create new blog' ref={blogFormRef}>
@@ -163,7 +162,13 @@ const App = () => {
           </div>
 
           {sortedBlogs.reverse().map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog} user={user}/>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              addLike={addLike}
+              removeBlog={removeBlog}
+              user={user}
+            />
           ).sort((a, b) => a.likes - b.likes)}
 
 

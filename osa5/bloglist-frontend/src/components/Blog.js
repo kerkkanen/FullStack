@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 
 const Blog = ({ blog, addLike, removeBlog, user }) => {
@@ -13,30 +14,30 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
 
   const [showMore, setShowMore] = useState(false)
 
-  const toggle = () => {
+  const toggleShowMore = () => {
     setShowMore(!showMore)
   }
 
   let deleteButton = ''
 
   if (user.username === blog.user.username) {
-    deleteButton = <div><button className='deleteButton' onClick={() => {removeBlog(blog, user)}}>remove</button></div>
+    deleteButton = <div><button className='deleteButton' id='remove' onClick={() => {removeBlog(blog, user)}}>remove</button></div>
   }
 
   if (showMore) {
     return (
       <div style={blogStyle}>
-        <div>
+        <div className='moreInfo'>
           {blog.title} by {blog.author}
           <br></br>
           {blog.url}
           <br></br>
-          likes {blog.likes} <button onClick={() => {addLike(blog)}}>like</button>
+          likes {blog.likes} <button id='like' onClick={() => {addLike(blog)}}>like</button>
           <br></br>
           {blog.user.username}
           {deleteButton}
           <div>
-            <button onClick={toggle}>hide</button>
+            <button onClick={toggleShowMore}>hide</button>
           </div>
         </div>
       </div>
@@ -44,8 +45,8 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
   } else {
     return (
       <div style={blogStyle}>
-        <div>
-          {blog.title} by {blog.author} <button onClick={toggle}>view</button>
+        <div className='blog'>
+          {blog.title} by {blog.author} <button id='view' onClick={toggleShowMore}>view</button>
         </div>
       </div>
     )
