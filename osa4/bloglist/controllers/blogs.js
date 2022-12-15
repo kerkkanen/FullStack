@@ -3,7 +3,7 @@ const middleware = require('../utils/middleware')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-blogsRouter.get('', async (request, response) => {
+blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
   .find({}).populate('user', {username: 1, name: 1})
 
@@ -42,7 +42,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
 
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
   const blog = await Blog.findById(request.params.id)
-  
+
   if (blog.user.toString() !== request.user.id) {
     return response.status(401).json({ error: 'unauthorized action'})
   }
