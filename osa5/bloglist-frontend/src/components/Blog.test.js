@@ -7,7 +7,7 @@ import BlogForm from './BlogForm'
 
 test('renders title and author, but not other information', () => {
   const user = {
-    username: 'testaaja'
+    username: 'testaaja',
   }
 
   const blog = {
@@ -16,11 +16,11 @@ test('renders title and author, but not other information', () => {
     likes: 0,
     url: 'www.testi.com',
     user: {
-      username: 'testaaja'
-    }
+      username: 'testaaja',
+    },
   }
 
-  const { container } = render(<Blog blog={blog} user={user}/>)
+  const { container } = render(<Blog blog={blog} user={user} />)
 
   const div = container.querySelector('.blog')
   expect(div).toHaveTextContent('Testiblogi')
@@ -31,7 +31,7 @@ test('renders title and author, but not other information', () => {
 
 test('clicking view shows likes, url and username', async () => {
   const username = {
-    username: 'testaaja'
+    username: 'testaaja',
   }
 
   const blog = {
@@ -40,8 +40,8 @@ test('clicking view shows likes, url and username', async () => {
     likes: 0,
     url: 'www.testi.com',
     user: {
-      username: 'testaaja'
-    }
+      username: 'testaaja',
+    },
   }
 
   render(<Blog blog={blog} user={username} />)
@@ -59,7 +59,7 @@ test('clicking view shows likes, url and username', async () => {
 
 test('clicking like button twice calls the function twice shows likes, url and username', async () => {
   const username = {
-    username: 'testaaja'
+    username: 'testaaja',
   }
 
   const blog = {
@@ -68,8 +68,8 @@ test('clicking like button twice calls the function twice shows likes, url and u
     likes: 0,
     url: 'www.testi.com',
     user: {
-      username: 'testaaja'
-    }
+      username: 'testaaja',
+    },
   }
 
   const mockHandler = jest.fn()
@@ -84,7 +84,6 @@ test('clicking like button twice calls the function twice shows likes, url and u
   await user.click(likesButton)
 
   expect(mockHandler.mock.calls).toHaveLength(2)
-
 })
 
 test('<BlogForm /> callback-function is called with correct parameters', async () => {
@@ -107,5 +106,4 @@ test('<BlogForm /> callback-function is called with correct parameters', async (
   expect(addBlog.mock.calls[0][0].title).toBe('testiblogi')
   expect(addBlog.mock.calls[0][0].author).toBe('testaaja')
   expect(addBlog.mock.calls[0][0].url).toBe('bloki.fi')
-
 })

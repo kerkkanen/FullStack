@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
+import Button from 'react-bootstrap/Button'
 
 const LoginForm = ({
   Login,
   username,
   password,
   handleUsernameChange,
-  handlePasswordChange
+  handlePasswordChange,
 }) => {
   return (
     <div>
@@ -13,8 +14,9 @@ const LoginForm = ({
 
       <form onSubmit={Login}>
         <div>
-          username: <input
-            id='username'
+          username:{' '}
+          <input
+            id="username"
             type="text"
             value={username}
             name="Username"
@@ -22,15 +24,18 @@ const LoginForm = ({
           />
         </div>
         <div>
-          password: <input
-            id='password'
+          password:{' '}
+          <input
+            id="password"
             type="password"
             value={password}
             name="Password"
             onChange={handlePasswordChange}
           />
         </div>
-        <button id='login-button' type="submit">login</button>
+        <Button variant="success" id="login-button" type="submit">
+          login
+        </Button>
       </form>
     </div>
   )
@@ -41,7 +46,7 @@ LoginForm.propTypes = {
   username: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   handleUsernameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired
+  handlePasswordChange: PropTypes.func.isRequired,
 }
 
 export default LoginForm

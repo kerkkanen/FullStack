@@ -1,5 +1,5 @@
-
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, addLike, removeBlog, user }) => {
   const blogStyle = {
@@ -9,7 +9,7 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 10,
-    textAlign: 'center'
+    textAlign: 'center',
   }
 
   const [showMore, setShowMore] = useState(false)
@@ -20,19 +20,41 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
 
   let deleteButton = ''
 
-  if (user.username === blog.user.username) {
-    deleteButton = <div><button className='deleteButton' id='remove' onClick={() => {removeBlog(blog, user)}}>remove</button></div>
+  if (user && user.username === blog.user.username) {
+    deleteButton = (
+      <div>
+        <button
+          className="deleteButton"
+          id="remove"
+          onClick={() => {
+            removeBlog(blog, user)
+          }}
+        >
+          remove
+        </button>
+      </div>
+    )
   }
 
   if (showMore) {
     return (
       <div style={blogStyle}>
-        <div className='moreInfo'>
-          {blog.title} by {blog.author}
+        <div className="moreInfo">
+          <div>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
+          </div>
           <br></br>
           {blog.url}
           <br></br>
-          likes {blog.likes} <button id='like' onClick={() => {addLike(blog)}}>like</button>
+          likes {blog.likes}
+          <button
+            id="like"
+            onClick={() => {
+              addLike(blog)
+            }}
+          >
+            like
+          </button>
           <br></br>
           {blog.user.username}
           {deleteButton}
@@ -45,13 +67,17 @@ const Blog = ({ blog, addLike, removeBlog, user }) => {
   } else {
     return (
       <div style={blogStyle}>
-        <div className='blog'>
-          {blog.title} by {blog.author} <button id='view' onClick={toggleShowMore}>view</button>
+        <div className="blog">
+          <div>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
+          </div>
+          <button id="view" onClick={toggleShowMore}>
+            view
+          </button>
         </div>
       </div>
     )
   }
-
 }
 
 export default Blog
